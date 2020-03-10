@@ -20,3 +20,8 @@ We begin with a random policy that we assume(A policy is a mapping between each 
     - As long as our starting action (before the bellman update) and the final action obtained are different in even one state, we keep running policy improvement.
     
 Then finally, before returning the policy, we do policy evaluation one more time to ensure the error is below threshold and then return the optimal policy.
+
+### How to Run ###
+
+ * I used Visual Studio code with the C++ plugin enabled and MinGW and cygwin64 to implement the C++ program. The Transition matrix, reward matrix and number of states and actions are built into the code. However, we could load these from an external file in the future if need be.
+ * You could use any C++ compiler/IDE combination to run this as this code doesn't use any fancy libraries to implement the MDP.
