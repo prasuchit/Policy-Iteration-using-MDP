@@ -1,6 +1,6 @@
 This repository implements the movement of a UAV in a Gridworld as a Markov Decision Process and performs policy iteration to find the best action in each state. 
 
-![alt text](https://raw.githubusercontent.com/prasuchit/Policy-Iteration-using-MDP/master/UAV-gridworld.png)
+![Gridworld with UAV](https://raw.githubusercontent.com/prasuchit/Policy-Iteration-using-MDP/master/UAV-gridworld.png)
 
  * There are 16 possible states in the grid numbered (0-15)
  * There are 4 possible actions that the UAV can perform in each state: North, East, West, South.
