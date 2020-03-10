@@ -1,3 +1,9 @@
+/*
+Policy Iteration using Markov Decision Process.
+Written by Prasanth Suresh (ps32611@uga.edu)
+Do not replicate/modify without permission.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -5,14 +11,14 @@
 #include <time.h>
 #include <algorithm>
 using namespace std;
-
+//Global variables
 int gridsize = 4;
 int nS = gridsize * gridsize, nA = 4;
 int action[4] = {0, 1, 2, 3}; //{'N','E','W','S'};
-double gamma = 0.99;
+double gamma = 0.99;          //Discount factor
 double R[16] = {0};
-double T[16][16][4] ={{{0}}};
-double V[16];
+double T[16][16][4] = {{{0}}}; // Transition matrix T(s',s,a)
+double V[16];                  // value matrix to check state utility
 int policy[16];
 
 double abs(double x)
@@ -35,16 +41,15 @@ double max1(double a, double b)
         return b;
 }
 
-
 int loc2s(int x, int y, int gridsize)
-{
+{   // This function converts 2D xy location into 1D vector of states
     x = max(0, min(gridsize - 1, x));
     y = max(0, min(gridsize - 1, y));
     int state = (y * gridsize + x);
     return state;
 }
 
-void evaluate_policy();
+void evaluate_policy(); //Function prototypes
 bool policy_improve();
 
 int main(int argc, char *argv[])
@@ -60,16 +65,16 @@ int main(int argc, char *argv[])
             temp = -0.5;
         else
             temp = -0.05;
-        R[i] = temp;
+        R[i] = temp;    // Updating the reward matrix
     }
-    
+
     srand(time(0)); //initialize the random seed
     for (int i = 0; i < nS; i++)
     {
         int RandIndex = rand() % 4; //generates a random number between 0 and 3
-        V[i] = 0;                   //V_prev[i]=0;
+        V[i] = 0;  // Initializing all state utility values to 0
         if (i == 10)
-            policy[i] = -1;
+            policy[i] = -1; // Blocked state in the grid. Can't go here!
         else
             policy[i] = action[RandIndex];
     }
@@ -89,11 +94,12 @@ int main(int argc, char *argv[])
                 for (int a2 = 0; a2 < nA; a2++)
                 {
                     // Action North
-                    if (a == a2)
+                    if (a == a2)        // If final direction is same as intended direction
                     {
                         temp = 0.85;
                     }
-                    else if (a == 0 && a2 == 1)
+                    // The rest are when we travel in the perpendicular directions to intended direction
+                    else if (a == 0 && a2 == 1) 
                     {
                         temp = 0.075;
                     }
@@ -145,31 +151,32 @@ int main(int argc, char *argv[])
                         temp = 0.075;
                     }
 
-                    T[nxts[a2]][s][a] = temp;
+                    T[nxts[a2]][s][a] = temp;   // Update transition matrix
                 }
             }
         }
     }
-    
+
     int p = 0;
 
     bool policy_stable = false;
 
-    while(!policy_stable){
-    	evaluate_policy();
-    	policy_stable = policy_improve();
-        // policy_stable = true;
+    while (!policy_stable)
+    {
+        evaluate_policy();
+        policy_stable = policy_improve();
     }
     evaluate_policy();
 
-    for(int i=0;i<nS;i++){
+    for (int i = 0; i < nS; i++)
+    {
 
-    		cout<<V[i]<<" "<<policy[i]<<endl;
+        cout << V[i] << " " << policy[i] << endl;
     }
 }
 
 void evaluate_policy()
-{
+{   // Check readme to see what this does. In short, it finds the value for each possible next state for given policy.
     double error = 0.2;
     double v;
     double R_val, T_val;
@@ -194,7 +201,8 @@ void evaluate_policy()
 }
 
 bool policy_improve()
-{
+{ // Check readme to see what this does. 
+  // In short, it finds the value for each possible next state for all possible actions and picks best action.
     bool policy_stable = true;
     int current_action;
     double R_val, T_val;
